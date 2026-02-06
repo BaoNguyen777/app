@@ -111,7 +111,7 @@ export default function Portfolio() {
       const data = await response.json()
 
       if (response.ok) {
-        toast.success('Message sent successfully! I\'ll get back to you soon.')
+        toast.success('Message sent successfully! I will get back to you soon.')
         setFormData({ name: '', email: '', message: '' })
       } else {
         toast.error(data.error || 'Failed to send message. Please try again.')

@@ -337,7 +337,7 @@ export default function Portfolio() {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
               <Badge className="mb-4" variant="outline">Contact</Badge>
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">Let's Create Something Great</h2>
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">Let us Create Something Great</h2>
               <p className="text-xl text-muted-foreground">
                 Ready to elevate your content? Get in touch!
               </p>

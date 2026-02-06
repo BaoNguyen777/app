@@ -260,19 +260,19 @@ export default function Portfolio() {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
                 <Badge className="mb-4" variant="outline">About Me</Badge>
-                <h2 className="text-4xl font-bold mb-6">Hi, I'm a Copywriter Who Gets Results</h2>
+                <h2 className="text-4xl font-bold mb-6">Hi, I am a Copywriter Who Gets Results</h2>
                 <div className="space-y-4 text-muted-foreground">
                   <p>
                     With over 5 years of experience crafting words that convert, I specialize in 
                     creating compelling copy that resonates with audiences and drives measurable results.
                   </p>
                   <p>
-                    I believe great copy is more than just words on a page—it's about understanding 
-                    your audience, telling your brand's unique story, and creating content that inspires action.
+                    I believe great copy is more than just words on a page - it is about understanding 
+                    your audience, telling your brand&apos;s unique story, and creating content that inspires action.
                   </p>
                   <p>
-                    Whether you're launching a new product, rebranding, or looking to boost your 
-                    marketing performance, I'm here to help your words work harder for you.
+                    Whether you are launching a new product, rebranding, or looking to boost your 
+                    marketing performance, I am here to help your words work harder for you.
                   </p>
                 </div>
                 <div className="mt-8 flex flex-wrap gap-2">

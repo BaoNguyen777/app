@@ -330,7 +330,7 @@ def test_database_connection():
     
     try:
         client, db = get_db_connection()
-        if db:
+        if db is not None:
             # Test database connectivity
             collections = db.list_collection_names()
             print(f"✅ Connected to MongoDB database '{DB_NAME}'")

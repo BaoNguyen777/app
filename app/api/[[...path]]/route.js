@@ -1,104 +1,130 @@
 import { MongoClient } from 'mongodb'
-import { v4 as uuidv4 } from 'uuid'
 import { NextResponse } from 'next/server'
+import { v4 as uuidv4 } from 'uuid'
 
-// MongoDB connection
-let client
-let db
+const MONGO_URL = process.env.MONGO_URL
 
-async function connectToMongo() {
-  if (!client) {
-    client = new MongoClient(process.env.MONGO_URL)
-    await client.connect()
-    db = client.db(process.env.DB_NAME)
+let cachedClient = null
+let cachedDb = null
+
+async function connectToDatabase() {
+  if (cachedClient && cachedDb) {
+    return { client: cachedClient, db: cachedDb }
   }
-  return db
+
+  const client = await MongoClient.connect(MONGO_URL, {
+    maxPoolSize: 10,
+    minPoolSize: 2
+  })
+
+  const db = client.db('copywriting_portfolio')
+
+  cachedClient = client
+  cachedDb = db
+
+  return { client, db }
 }
 
-// Helper function to handle CORS
-function handleCORS(response) {
-  response.headers.set('Access-Control-Allow-Origin', process.env.CORS_ORIGINS || '*')
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  response.headers.set('Access-Control-Allow-Credentials', 'true')
-  return response
-}
-
-// OPTIONS handler for CORS
-export async function OPTIONS() {
-  return handleCORS(new NextResponse(null, { status: 200 }))
-}
-
-// Route handler function
-async function handleRoute(request, { params }) {
-  const { path = [] } = params
-  const route = `/${path.join('/')}`
-  const method = request.method
-
+// POST /api/contact - Submit contact form
+export async function POST(request) {
   try {
-    const db = await connectToMongo()
+    const path = request.nextUrl.pathname.replace('/api/', '')
 
-    // Root endpoint - GET /api/root (since /api/ is not accessible with catch-all)
-    if (route === '/root' && method === 'GET') {
-      return handleCORS(NextResponse.json({ message: "Hello World" }))
-    }
-    // Root endpoint - GET /api/root (since /api/ is not accessible with catch-all)
-    if (route === '/' && method === 'GET') {
-      return handleCORS(NextResponse.json({ message: "Hello World" }))
-    }
-
-    // Status endpoints - POST /api/status
-    if (route === '/status' && method === 'POST') {
+    if (path === 'contact') {
       const body = await request.json()
-      
-      if (!body.client_name) {
-        return handleCORS(NextResponse.json(
-          { error: "client_name is required" }, 
+      const { name, email, message } = body
+
+      // Validation
+      if (!name || !email || !message) {
+        return NextResponse.json(
+          { error: 'All fields are required' },
           { status: 400 }
-        ))
+        )
       }
 
-      const statusObj = {
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(email)) {
+        return NextResponse.json(
+          { error: 'Invalid email address' },
+          { status: 400 }
+        )
+      }
+
+      const { db } = await connectToDatabase()
+
+      const contactSubmission = {
         id: uuidv4(),
-        client_name: body.client_name,
-        timestamp: new Date()
+        name,
+        email,
+        message,
+        status: 'new',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       }
 
-      await db.collection('status_checks').insertOne(statusObj)
-      return handleCORS(NextResponse.json(statusObj))
+      await db.collection('contacts').insertOne(contactSubmission)
+
+      return NextResponse.json(
+        {
+          success: true,
+          message: 'Your message has been sent successfully!',
+          data: {
+            id: contactSubmission.id,
+            name: contactSubmission.name,
+            email: contactSubmission.email
+          }
+        },
+        { status: 201 }
+      )
     }
 
-    // Status endpoints - GET /api/status
-    if (route === '/status' && method === 'GET') {
-      const statusChecks = await db.collection('status_checks')
-        .find({})
-        .limit(1000)
-        .toArray()
-
-      // Remove MongoDB's _id field from response
-      const cleanedStatusChecks = statusChecks.map(({ _id, ...rest }) => rest)
-      
-      return handleCORS(NextResponse.json(cleanedStatusChecks))
-    }
-
-    // Route not found
-    return handleCORS(NextResponse.json(
-      { error: `Route ${route} not found` }, 
+    return NextResponse.json(
+      { error: 'Route not found' },
       { status: 404 }
-    ))
-
+    )
   } catch (error) {
     console.error('API Error:', error)
-    return handleCORS(NextResponse.json(
-      { error: "Internal server error" }, 
+    return NextResponse.json(
+      { error: 'Internal server error', details: error.message },
       { status: 500 }
-    ))
+    )
   }
 }
 
-// Export all HTTP methods
-export const GET = handleRoute
-export const POST = handleRoute
-export const PUT = handleRoute
-export const DELETE = handleRoute
-export const PATCH = handleRoute
+// GET /api/contacts - Get all contact submissions (optional admin endpoint)
+export async function GET(request) {
+  try {
+    const path = request.nextUrl.pathname.replace('/api/', '')
+
+    if (path === 'contacts') {
+      const { db } = await connectToDatabase()
+      
+      const contacts = await db
+        .collection('contacts')
+        .find({})
+        .sort({ createdAt: -1 })
+        .toArray()
+
+      return NextResponse.json(
+        {
+          success: true,
+          data: contacts,
+          total: contacts.length
+        },
+        { status: 200 }
+      )
+    }
+
+    return NextResponse.json(
+      { error: 'Route not found' },
+      { status: 404 }
+    )
+  } catch (error) {
+    console.error('API Error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error', details: error.message },
+      { status: 500 }
+    )
+  }
+}

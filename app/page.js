@@ -156,12 +156,12 @@ export default function Portfolio() {
             
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
               I craft compelling copy that connects with your audience and drives results. 
-              From websites to emails, I'll help your brand tell its story.
+              From websites to emails, I will help your brand tell its story.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button size="lg" className="text-lg px-8" onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}>
-                Let's Work Together
+                Let us Work Together
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8" onClick={() => document.getElementById('portfolio').scrollIntoView({ behavior: 'smooth' })}>

@@ -385,7 +385,7 @@ export default function Portfolio() {
               <Card>
                 <CardHeader>
                   <CardTitle>Send a Message</CardTitle>
-                  <CardDescription>Fill out the form and I'll get back to you within 24 hours</CardDescription>
+                  <CardDescription>Fill out the form and I will get back to you within 24 hours</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-4">

@@ -303,7 +303,7 @@ export default function Portfolio() {
             <Badge className="mb-4" variant="outline">Testimonials</Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">What Clients Say</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Don't just take my word for it
+              Do not just take my word for it
             </p>
           </div>
           
@@ -319,7 +319,7 @@ export default function Portfolio() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground mb-6">"{testimonial.content}"</p>
+                  <p className="text-muted-foreground mb-6">&quot;{testimonial.content}&quot;</p>
                   <div>
                     <div className="font-semibold">{testimonial.name}</div>
                     <div className="text-sm text-muted-foreground">{testimonial.role}</div>

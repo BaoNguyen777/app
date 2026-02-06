@@ -73,7 +73,7 @@ def test_valid_contact_submission():
             
             # Verify MongoDB storage
             client, db = get_db_connection()
-            if db:
+            if db is not None:
                 contact = db.contacts.find_one({"id": submission_id})
                 if contact:
                     print("✅ Contact found in MongoDB:")

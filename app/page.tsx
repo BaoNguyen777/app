@@ -140,12 +140,12 @@ export default function Portfolio(): JSX.Element {
     <div className="min-h-screen bg-[#f6f6f7] text-[#0b1023]">
       <section className="relative min-h-[820px] flex items-center justify-center overflow-hidden border-b border-black/5">
         <div
-          className="absolute -inset-3 bg-center bg-cover blur-[2px] scale-[1.02]"
+          className="absolute inset-0 bg-center bg-cover"
           style={{
             backgroundImage: "url('https://images.unsplash.com/photo-1535957998253-26ae1ef29506?auto=format&fit=crop&w=1920&q=80')"
           }}
         />
-        <div className="absolute inset-0 bg-white/82" />
+        <div className="absolute inset-0 bg-white/62 backdrop-blur-[4px]" />
 
         <div className="relative z-10 max-w-[920px] mx-auto text-center px-6 pt-16">
           <Badge variant="outline" className="mb-6 text-[14px] px-6 py-2 bg-white/80 border-black/10 rounded-lg">
